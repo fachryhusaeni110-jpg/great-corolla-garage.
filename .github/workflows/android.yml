@@ -1,0 +1,35 @@
+
+name: Build Great Corolla Garage APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Extract project
+        run: |
+          unzip Great_Corolla_Garage_Cloud_Build.zip -d source
+
+      - name: Build APK
+        run: |
+          cd source/great_corolla_garage
+          gradle --no-daemon assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Great-Corolla-Garage-APK
+          path: source/great_corolla_garage/app/build/outputs/apk/debug/app-debug.apk
